@@ -1,0 +1,20 @@
+
+BEGIN
+
+DROP TABLE IF EXISTS public."TenderNotification" CASCADE;
+DROP TABLE IF EXISTS public."Notification" CASCADE;
+DROP TABLE IF EXISTS public."FavoriteInstitution" CASCADE;
+DROP TABLE IF EXISTS public."Institution" CASCADE;
+DROP TABLE IF EXISTS public."Role" CASCADE;
+DROP TABLE IF EXISTS public."Category" CASCADE;
+DROP TABLE IF EXISTS public."Tender" CASCADE;
+DROP TABLE IF EXISTS public."Word" CASCADE;
+DROP TABLE IF EXISTS public."Action" CASCADE;
+DROP TABLE IF EXISTS public."Actions_role" CASCADE;
+DROP TABLE IF EXISTS public."User" CASCADE;
+DROP TABLE IF EXISTS public."NewAccountNotification" CASCADE;
+DROP TABLE IF EXISTS public."TenderHistory" CASCADE;
+DROP TABLE IF EXISTS public."TenderSaved" CASCADE;
+
+
+END;
