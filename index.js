@@ -2,7 +2,7 @@ const { Client }  = require('pg');
 const express = require('express');
 const app = express();
 const cors = require('cors');
-require('dotenv').config();
+const client = require('./client');
 
 
 //Middlewere
@@ -13,38 +13,24 @@ app.use(
         extended: true
     })
 )
-
 app.use(express.json());
 
 
 
 //import routes
+const testRoute = require('./routes/test');
 
 
+app.use('/test', testRoute);
 
 
-
-// db connection
-
-const client =  new Client({
-    connectionString: process.env.URI,
-    ssl: {
-        rejectUnauthorized: false
+client.connect( err => {
+    if (err) {
+        console.error('connection error', err.stack)
+    } else {
+        console.log('connected to postgresql database. Listen in port localhost:3000')
     }
 });
 
-
-client.connect();
-
-
-client.query(`SELECT * FROM public."User";`, (err,res)=> {
-    if (err) throw err;
-    console.log(JSON.stringify(res));
-
-    client.end();
-})
-
-
+// server listing in port 3000
 app.listen(3000);
-
-module.exports = client;
