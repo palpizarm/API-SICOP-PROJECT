@@ -16,9 +16,11 @@ app.use(express.json());
 
 //import routes
 const testRoute = require("./routes/test");
-const updateCategory = require("./routes/preferenceManagement");
+const categories = require("./routes/categoriesManagement");
+const favoriteInstitution = require("./routes/favoriteInstitutionsManagement");
 
-app.use("/category", updateCategory);
+app.use("/category", categories);
+app.use("/favoriteInstitutions", favoriteInstitution);
 app.use("/test", testRoute);
 
 client.connect((err) => {

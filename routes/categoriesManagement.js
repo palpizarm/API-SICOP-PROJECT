@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const client = require("../client");
 
-router.post("/update", async (req, res) => {
+//Insert new category to Category table
+router.post("/", async (req, res) => {
   try {
     let date = new Date();
     var month = date.getMonth() + 1;
