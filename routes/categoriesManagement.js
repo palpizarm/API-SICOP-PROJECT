@@ -67,7 +67,7 @@ router.post("/createCategory", async (req, res) => {
 Method: GET.
 Description: Get all categories of the respective user.
 Request URL: http://localhost:3000/category/getCategories
-Request body: {}
+Request body: {"user_id"}
 */
 router.get("/getCategories", async (req, res) => {
   try {
@@ -82,6 +82,41 @@ router.get("/getCategories", async (req, res) => {
     res.json({
         msg: "",
         data: categories,
+        code: 1
+    })
+
+  } catch (error) {
+
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1
+    });
+
+  }
+});
+
+
+/*
+Method: GET.
+Description: Get all the words of the respective category.
+Request URL: http://localhost:3000/category/getWords
+Request body: {"category_id"}
+*/
+router.get("/getWords", async (req, res) => {
+  try {
+
+    //Get all the words of the respective category
+    let words = await client.query(`SELECT word_id, word, date_created 
+                                        FROM public."Word"
+                                        WHERE category_id = ${req.body.category_id} and deleted = B'0'`);
+
+    //Successful get
+    res.status(200);
+    res.json({
+        msg: "",
+        data: words,
         code: 1
     })
 
