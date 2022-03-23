@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const client = require('../client');
+const { patch } = require('./test');
 
 
 /*
-Method: POST.
+Method: PATCH.
 Description: Inactivate a cliente or maintenance user.
 Request URL: http://localhost:3000/gestionCuenta/inactivateUser
 Request body: {"user_id"}
 */
-router.post('/inactivateUser', async (req, res) => {
+router.patch('/inactivateUser', async (req, res) => {
     try {
 
         let updateUser = await client.query(`UPDATE public."User"
