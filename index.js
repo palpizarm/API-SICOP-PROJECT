@@ -20,10 +20,12 @@ app.use(express.json());
 //import routes
 const testRoute = require('./routes/test');
 const registroUsuarioRoute = require('./routes/registroUsuario');
+const gestionCuentaRoute = require('./routes/gestionCuenta');
 
 
 app.use('/test', testRoute);
 app.use('/registroUsuario', registroUsuarioRoute);
+app.use('/gestionCuenta', gestionCuentaRoute);
 
 
 client.connect( err => {
