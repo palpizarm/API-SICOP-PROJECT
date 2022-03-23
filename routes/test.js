@@ -6,10 +6,20 @@ const client = require('../client');
 router.get('/', async (req, res) => {
     try {
         const response = await client.query(`SELECT NOW();`);
-        res.json(response)
+        res.status(200);
+        res.json({
+            msg: "",
+            data: response,
+            code: 1
+        })
        
     } catch(error) {
-        res.json({message: error})
+        res.status(400);
+        res.json({
+            msg: error,
+            data: "",
+            code: -1
+        })
     }
 })
 
