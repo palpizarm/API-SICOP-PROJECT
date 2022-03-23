@@ -2,35 +2,63 @@ const express = require("express");
 const router = express.Router();
 const client = require("../client");
 
-//Insert new category to Category table
-router.post("/", async (req, res) => {
+
+/*
+Method: POST.
+Description: Insert new category of words.
+Request URL: http://localhost:3000/category/createCategory
+Request body: {"name",
+               "user_id",
+               "words":[]}
+*/
+router.post("/createCategory", async (req, res) => {
   try {
 
-    let date = new Date();
-    var month = date.getMonth() + 1;
-    var formatDate = date.getFullYear() + "-" + month + "-" + date.getDate();
+    //Declaration of variables
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
 
-    const response = await client.query(
-      `insert into public."Category" (category_id,name,user_id,date_created)
-      values ( $1, $2, $3, $4);`,
-      [req.body.category_id, req.body.name, req.body.user_id, formatDate]
-    );
+    today = yyyy + '-' + mm + '-' + dd;
 
+    //Register the new category with the query
+    let registerCategory = await client.query(`INSERT INTO public."Category"(name, user_id, date_created)
+                                        VALUES ('${req.body.name}',${req.body.user_id},'${today}');`);
+
+    
+    //Get the last registered category
+    let lastCategory = await client.query(`SELECT category_id FROM public."Category" 
+                                          ORDER BY category_id DESC LIMIT 1`);
+
+    const idCategory = lastCategory.rows[0].category_id;
+
+    //Register each word to the new category with the query                                      
+    for(let i=0; i<req.body.words.length; i++){
+
+      let registerWord = await client.query(`INSERT INTO public."Word"(word, category_id, date_created)
+                                          VALUES ('${req.body.words[i]}',${idCategory},'${today}');`);
+
+
+    }
+    
+    //Successful registration
     res.status(200);
     res.json({
-      code: 6,
-      msg: "",
-      data: response,
-    });
+        msg: "",
+        data: lastCategory,
+        code: 1
+    })
 
   } catch (error) {
     
     res.status(400);
     res.json({
-      code: -6,
       msg: error,
-      data: formatDate,
+      data: "",
+      code: -1
     });
+
   }
 });
 

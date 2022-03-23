@@ -14,14 +14,17 @@ app.use(
 );
 app.use(express.json());
 
+
 //import routes
 const testRoute = require("./routes/test");
-const categories = require("./routes/categoriesManagement");
-const favoriteInstitution = require("./routes/favoriteInstitutionsManagement");
+const categoryRoute = require("./routes/categoriesManagement");
+const favoriteInstitutionRoute = require("./routes/favoriteInstitutionsManagement");
 
-app.use("/category", categories);
-app.use("/favoriteInstitutions", favoriteInstitution);
+
+app.use("/category", categoryRoute);
+app.use("/favoriteInstitutions", favoriteInstitutionRoute);
 app.use("/test", testRoute);
+
 
 client.connect((err) => {
   if (err) {
