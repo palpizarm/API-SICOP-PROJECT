@@ -19,9 +19,11 @@ app.use(express.json());
 
 //import routes
 const testRoute = require('./routes/test');
+const registroUsuarioRoute = require('./routes/registroUsuario');
 
 
 app.use('/test', testRoute);
+app.use('/registroUsuario', registroUsuarioRoute);
 
 
 client.connect( err => {
