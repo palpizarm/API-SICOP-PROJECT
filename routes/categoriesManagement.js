@@ -62,4 +62,40 @@ router.post("/createCategory", async (req, res) => {
   }
 });
 
+
+/*
+Method: GET.
+Description: Get all categories of the respective user.
+Request URL: http://localhost:3000/category/getCategories
+Request body: {}
+*/
+router.get("/getCategories", async (req, res) => {
+  try {
+
+    //Get all the categories of the respective user
+    let categories = await client.query(`SELECT category_id, name, date_created 
+                                        FROM public."Category"
+                                        WHERE user_id = ${req.body.user_id} and deleted = B'0'`);
+
+    //Successful get
+    res.status(200);
+    res.json({
+        msg: "",
+        data: categories,
+        code: 1
+    })
+
+  } catch (error) {
+
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1
+    });
+
+  }
+});
+
+
 module.exports = router;
