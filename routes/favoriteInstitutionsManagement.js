@@ -75,16 +75,15 @@ router.post("/createFavorite", async (req, res) => {
 /*
 Method: DELETE.
 Description:Delete a specific favorite institution of the respective user.
-Request URL: http://localhost:3000/institutions/deleteFavorite
-Request body: {"user_id",
-               "institution_id"}
+Request URL: http://localhost:3000/institutions/deleteFavorite/:user_id/:institution_id
+Request params: user_id,institution_id
 */
-router.delete("/deleteFavorite", async (req, res) => {
+router.delete("/deleteFavorite/:user_id/:institution_id", async (req, res) => {
 
   try {
     //Delete a specific favorite institution of the respective user.
     const favorite = await client.query(
-      `delete from public."FavoriteInstitution" where user_id = '${req.body.user_id}' AND institution_id = '${req.body.institution_id}' ;`
+      `DELETE from public."FavoriteInstitution" where user_id = '${req.params.user_id}' AND institution_id = '${req.params.institution_id}' ;`
     );
 
     //Successful delete
