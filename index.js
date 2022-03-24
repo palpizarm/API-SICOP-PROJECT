@@ -22,7 +22,7 @@ const favoriteInstitutionRoute = require("./routes/favoriteInstitutionsManagemen
 
 
 app.use("/category", categoryRoute);
-app.use("/favoriteInstitutions", favoriteInstitutionRoute);
+app.use("/institutions", favoriteInstitutionRoute);
 app.use("/test", testRoute);
 
 

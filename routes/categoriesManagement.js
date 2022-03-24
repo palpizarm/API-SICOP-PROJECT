@@ -132,5 +132,65 @@ router.get("/getWords", async (req, res) => {
   }
 });
 
+/*
+Method: POST.
+Description: Update a specific category of words.
+Request URL: http://localhost:3000/category/updateCategory
+Request body: {"category_id",
+               "name",
+               "user_id",
+               "addWords":[],
+               "deleteWords":[]}
+*/
+router.post("/updateCategory", async (req, res) => {
+  try {
+
+    //Declaration of variables
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+
+    //Update name of exist category with the query
+    let updateCategory = await client.query(`UPDATE public."Category" SET name = '${req.body.name}' 
+                                              WHERE category_id = '${req.body.category_id}' ;`);
+
+    
+    //Register each word to the specific category with the query                                      
+    for(let i=0; i<req.body.addWords.length; i++){
+
+      let registerWord = await client.query(`INSERT INTO public."Word"(word, category_id, date_created)
+                                          VALUES ('${req.body.addWords[i]}',${req.body.category_id},'${today}');`);
+    }
+
+    //Delete each word to the specific category with the query                                      
+    for(let i=0; i<req.body.deleteWords.length; i++){
+
+      let registerWord = await client.query(`UPDATE public."Word" SET deleted = B'1' 
+                                          WHERE word = '${req.body.deleteWords[i]}' AND category_id = '${req.body.category_id}';`);
+    }
+    
+    //Successful updated
+    res.status(200);
+    res.json({
+        msg: "",
+        data: updateCategory,
+        code: 1
+    })
+
+  } catch (error) {
+    
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1
+    });
+
+  }
+});
+
 
 module.exports = router;
