@@ -7,32 +7,26 @@
  * Setup
 
  - Install following technologies in your local enviroment
-    
-    AngularJs 11.2
+   
     NodeJS 8.5.4
     Postgresql 14.2
 
 
  - Install node modules dependecies
 
-    1. Run into /backend/api
+    1. Run
+  
         npm install
-    
-    2. Run into /sicop
-        npm install
+
 
  - Run the project
 
     1. Run api
-        npm start into /backend/api
-
-    2. Run Angular frontend
-        ng serve into /sicop
+   
+        npm start
 
 
  - Common project mistakes and posible soluctions
-
-
 
 
 
