@@ -66,16 +66,16 @@ router.post("/createCategory", async (req, res) => {
 /*
 Method: GET.
 Description: Get all categories of the respective user.
-Request URL: http://localhost:3000/category/getCategories
-Request body: {"user_id"}
+Request URL: http://localhost:3000/category/getCategories/:user_id
+Request params: user_id
 */
-router.get("/getCategories", async (req, res) => {
+router.get("/getCategories/:user_id", async (req, res) => {
   try {
 
     //Get all the categories of the respective user
     let categories = await client.query(`SELECT category_id, name, date_created 
                                         FROM public."Category"
-                                        WHERE user_id = ${req.body.user_id} and deleted = B'0'`);
+                                        WHERE user_id = ${req.params.user_id} and deleted = B'0'`);
 
     //Successful get
     res.status(200);
@@ -101,16 +101,16 @@ router.get("/getCategories", async (req, res) => {
 /*
 Method: GET.
 Description: Get all the words of the respective category.
-Request URL: http://localhost:3000/category/getWords
-Request body: {"category_id"}
+Request URL: http://localhost:3000/category/getWords/:category_id
+Request params: category_id
 */
-router.get("/getWords", async (req, res) => {
+router.get("/getWords/:category_id", async (req, res) => {
   try {
 
     //Get all the words of the respective category
     let words = await client.query(`SELECT word_id, word, date_created 
                                         FROM public."Word"
-                                        WHERE category_id = ${req.body.category_id} and deleted = B'0'`);
+                                        WHERE category_id = ${req.params.category_id} and deleted = B'0'`);
 
     //Successful get
     res.status(200);

@@ -7,16 +7,16 @@ const client = require("../client");
 /*
 Method: GET.
 Description: Get all favorite institutions of the respective user.
-Request URL: http://localhost:3000/institutions/getFavorites
-Request body: {"user_id"}
+Request URL: http://localhost:3000/institutions/getFavorites/:user_id
+Request params: user_id
 */
 
-router.get("/getFavorites", async (req, res) => {
+router.get("/getFavorites/:user_id", async (req, res) => {
   try {
 
     //Get all favorite institutions of the respective user.
     const favoriteInstitutions = await client.query(
-      `SELECT legal_id,abbreviation,name FROM public."Institution" I,public."FavoriteInstitution" F where F.user_id = ${req.body.user_id};`);
+      `SELECT legal_id,abbreviation,name FROM public."Institution" I,public."FavoriteInstitution" F where F.user_id = ${req.params.user_id};`);
 
     //Successful get
     res.status(200);
