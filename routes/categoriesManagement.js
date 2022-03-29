@@ -172,4 +172,35 @@ router.patch("/updateCategory", async (req, res) => {
   }
 });
 
+
+/*
+Method: GET.
+Description: Get category by id.
+Request URL: http://localhost:3000/category/getCategories/:category_id
+Request params: category_id
+*/
+router.get("/getCategory/:category_id", async (req, res) => {
+  try {
+    //Get all the categories of the respective user
+    let categories = await client.query(`SELECT category_id, name, date_created 
+                                          FROM public."Category"
+                                          WHERE category_id = ${req.params.category_id}`);
+
+    //Successful get
+    res.status(200);
+    res.json({
+      msg: "",
+      data: categories,
+      code: 1,
+    });
+  } catch (error) {
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1,
+    });
+  }
+});
+
 module.exports = router;
