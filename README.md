@@ -39,11 +39,11 @@ This project follows Git Feature Workflow with Develop Branch. It allows teams t
 
 Each branch represents the code that is running on an environment. For example: master branch represents the production environment. So that, next table list all the branches and its corresponding environment.
 
-| Branch    |   | Environment |
------------------------------
-| master    | -> |	(production) |
-| develop   | -> |	(staging) |
-| epic-*    | -> |	(local) |
-| feature-* | -> |	(local) |
-| bugfix-*  | -> |	(local) |
-| hotfix-*  | -> |	(local) |
+Branch    |   | Environment 
+----------|----|-------------
+master    | -> |	(production) 
+develop   | -> |	(staging) 
+epic-*    | -> |	(local) 
+feature-* | -> |	(local) 
+bugfix-*  | -> |	(local) 
+hotfix-*  | -> |	(local) 
