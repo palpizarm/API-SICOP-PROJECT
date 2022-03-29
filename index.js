@@ -16,16 +16,17 @@ app.use(express.json());
 
 
 //import routes
-
-const testRoute = require("./routes/test");
+const testRoute = require('./routes/test');
+const registroUsuarioRoute = require('./routes/registroUsuario');
+const gestionCuentaRoute = require('./routes/gestionCuenta');
 const categoryRoute = require("./routes/categoriesManagement");
 const favoriteInstitutionRoute = require("./routes/favoriteInstitutionsManagement");
-const registroUsuarioRoute = require('./routes/registroUsuario');
 
 app.use("/category", categoryRoute);
 app.use("/institutions", favoriteInstitutionRoute);
 app.use('/test', testRoute);
 app.use('/registroUsuario', registroUsuarioRoute);
+app.use('/gestionCuenta', gestionCuentaRoute);
 
 
 
