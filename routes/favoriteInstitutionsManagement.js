@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const client = require("../client");
 
-
-
 /*
 Method: GET.
 Description: Get all favorite institutions of the respective user.
@@ -13,10 +11,10 @@ Request params: user_id
 
 router.get("/getFavorites/:user_id", async (req, res) => {
   try {
-
     //Get all favorite institutions of the respective user.
     const favoriteInstitutions = await client.query(
-      `SELECT legal_id,abbreviation,name FROM public."Institution" I,public."FavoriteInstitution" F where F.user_id = ${req.params.user_id};`);
+      `SELECT F.institution_id,legal_id,abbreviation,name FROM public."Institution" I,public."FavoriteInstitution" F where F.user_id = ${req.params.user_id};`
+    );
 
     //Successful get
     res.status(200);
@@ -25,9 +23,7 @@ router.get("/getFavorites/:user_id", async (req, res) => {
       msg: "",
       data: favoriteInstitutions,
     });
-
   } catch (error) {
-
     res.status(400);
     res.json({
       code: -6,
@@ -47,7 +43,7 @@ Request body: {"user_id",
 
 router.post("/createFavorite", async (req, res) => {
   try {
-   // Insert new favorite institution to the respective user
+    // Insert new favorite institution to the respective user
     const favorite = await client.query(
       `insert into public."FavoriteInstitution" (user_id,institution_id)
           values ('${req.body.user_id}','${req.body.institution_id}');`
@@ -59,9 +55,7 @@ router.post("/createFavorite", async (req, res) => {
       msg: "",
       data: favorite,
     });
-
   } catch (error) {
-
     res.status(400);
     res.json({
       code: -6,
@@ -71,7 +65,6 @@ router.post("/createFavorite", async (req, res) => {
   }
 });
 
-
 /*
 Method: DELETE.
 Description:Delete a specific favorite institution of the respective user.
@@ -79,7 +72,6 @@ Request URL: http://localhost:3000/institutions/deleteFavorite/:user_id/:institu
 Request params: user_id,institution_id
 */
 router.delete("/deleteFavorite/:user_id/:institution_id", async (req, res) => {
-
   try {
     //Delete a specific favorite institution of the respective user.
     const favorite = await client.query(
@@ -93,9 +85,7 @@ router.delete("/deleteFavorite/:user_id/:institution_id", async (req, res) => {
       msg: "",
       data: favorite,
     });
-
   } catch (error) {
-
     res.status(400);
     res.json({
       code: -6,
@@ -116,13 +106,13 @@ Request body: {"institution_id",
                 }
 */
 router.post("/edit", async (req, res) => {
-
   try {
     //Edit a specific institution.
     const favorite = await client.query(
       `UPDATE public."Institution" 
           SET legal_id = '${req.body.legal_id}',name ='${req.body.name}',abbreviation = '${req.body.abbreviation}'
-              WHERE institution_id = '${req.body.institution_id}' ;`);
+              WHERE institution_id = '${req.body.institution_id}' ;`
+    );
 
     //Successful post
     res.status(200);
@@ -131,9 +121,7 @@ router.post("/edit", async (req, res) => {
       msg: "",
       data: favorite,
     });
-
   } catch (error) {
-
     res.status(400);
     res.json({
       code: -6,
@@ -142,7 +130,6 @@ router.post("/edit", async (req, res) => {
     });
   }
 });
-
 
 /*
 Method: GET.
@@ -153,9 +140,10 @@ Request params: user_id
 
 router.get("/", async (req, res) => {
   try {
-
     //Get all  institutions in the system.
-    const institutions = await client.query(`SELECT * FROM public."Institution"`);
+    const institutions = await client.query(
+      `SELECT * FROM public."Institution"`
+    );
 
     //Successful get
     res.status(200);
@@ -164,9 +152,7 @@ router.get("/", async (req, res) => {
       msg: "",
       data: institutions,
     });
-
   } catch (error) {
-
     res.status(400);
     res.json({
       code: -6,
