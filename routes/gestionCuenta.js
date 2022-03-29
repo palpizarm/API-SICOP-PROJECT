@@ -43,7 +43,7 @@ router.get("/getMaintenanceUsers", async (req, res) => {
     let maintenanceUsers = await client.query(
       `SELECT U.user_id,U.name,U.email,R.name as role FROM public."User" U,public."Role" R 
       WHERE U.role_id = R.role_id 
-      AND R.name = 'Mantenimiento';`
+      AND R.role_id = 2;`
     );
 
     //Successful get
@@ -74,7 +74,7 @@ router.get("/getClientUsers", async (req, res) => {
     let clientUsers = await client.query(
       `SELECT U.user_id,U.name,U.email,R.name as role FROM public."User" U,public."Role" R 
         WHERE U.role_id = R.role_id 
-        AND R.name = 'Cliente';`
+        AND R.role_id = 3;`
     );
 
     //Successful get
