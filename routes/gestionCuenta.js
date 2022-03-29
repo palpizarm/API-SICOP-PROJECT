@@ -9,7 +9,6 @@ Description: Inactivate a cliente or maintenance user.
 Request URL: http://localhost:3000/gestionCuenta/inactivateUser
 Request body: {"user_id"}
 */
-
 router.patch("/inactivateUser", async (req, res) => {
   try {
     let updateUser = await client.query(`UPDATE public."User"
@@ -39,7 +38,6 @@ Method: GET.
 Description: Get all mantenance users that exists in LicitaTEC.
 Request URL: http://localhost:3000/gestionCuenta/getMaintenanceUsers
 */
-
 router.get("/getMaintenanceUsers", async (req, res) => {
   try {
     let maintenanceUsers = await client.query(
@@ -71,7 +69,6 @@ Method: GET.
 Description: Get all client users that exists in LicitaTEC.
 Request URL: http://localhost:3000/gestionCuenta/getClientUsers
 */
-
 router.get("/getClientUsers", async (req, res) => {
   try {
     let clientUsers = await client.query(
@@ -89,6 +86,56 @@ router.get("/getClientUsers", async (req, res) => {
     });
   } catch (error) {
     ////Registration failed
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1,
+    });
+  }
+});
+
+
+/*
+Method: POST.
+Description: Login of the users.
+Request URL: http://localhost:3000/gestionCuenta/login
+Request body: {"email",
+              "password"}
+*/
+router.post("/login", async (req, res) => {
+  try {
+
+    let confirmation = await client.query(
+      `SELECT *
+      FROM public."User"
+      WHERE email = '${req.body.email}' 
+      AND password = crypt('${req.body.password}', password);`
+    );
+    
+    if (confirmation.rowCount == 0){
+
+      //Login failed
+      res.status(400);
+      res.json({
+          msg: "El correo electrónico u contraseña no es correcta.",
+          data: "",
+          code: -1
+      })
+
+    }else{
+
+      //Successful login
+      res.status(200);
+      res.json({
+        msg: "",
+        data: confirmation,
+        code: 1,
+    });
+    }
+
+  } catch (error) {
+    ////Login failed
     res.status(400);
     res.json({
       msg: error,
