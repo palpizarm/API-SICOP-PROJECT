@@ -181,12 +181,49 @@ Request params: category_id
 */
 router.get("/getCategory/:category_id", async (req, res) => {
   try {
-    //Get all the categories of the respective user
-    let categories = await client.query(`SELECT category_id, name, date_created 
+    //Get the category
+    let category = await client.query(`SELECT category_id, name, date_created 
                                           FROM public."Category"
                                           WHERE category_id = ${req.params.category_id}`);
 
     //Successful get
+    res.status(200);
+    res.json({
+      msg: "",
+      data: category,
+      code: 1,
+    });
+  } catch (error) {
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1,
+    });
+  }
+});
+
+
+/*
+Method: DELETE.
+Description: Delete category and all words.
+Request URL: http://localhost:3000/category/:category_id
+Request params: category_id
+*/
+router.delete("/:category_id", async (req, res) => {
+  try {
+    //Delete the category
+    let categories = await client.query(`UPDATE public."Category" 
+                                          SET deleted = B'1' 
+                                          WHERE category_id = ${req.params.category_id}`);
+
+
+    // Delete all word associated to this category_id
+    await client.query(`UPDATE public."Word" 
+                        SET deleted = B'1' 
+                        WHERE category_id = ${req.params.category_id}`)
+
+    //Successful delete
     res.status(200);
     res.json({
       msg: "",
@@ -201,6 +238,6 @@ router.get("/getCategory/:category_id", async (req, res) => {
       code: -1,
     });
   }
-});
+})
 
 module.exports = router;
