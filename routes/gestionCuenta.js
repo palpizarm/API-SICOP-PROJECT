@@ -143,7 +143,7 @@ router.post("/login", async (req, res) => {
 
     if (confirmation.rowCount == 0) {
       //Login failed
-      res.status(400);
+      res.status(200);
       res.json({
         msg: "El correo electrónico u contraseña no es correcta.",
         data: "",
