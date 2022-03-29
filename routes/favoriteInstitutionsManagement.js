@@ -143,4 +143,37 @@ router.post("/edit", async (req, res) => {
   }
 });
 
+
+/*
+Method: GET.
+Description: Get all  institutions register in the system.
+Request URL: http://localhost:3000/institutions
+Request params: user_id
+*/
+
+router.get("/", async (req, res) => {
+  try {
+
+    //Get all  institutions in the system.
+    const institutions = await client.query(`SELECT * FROM public."Institution"`);
+
+    //Successful get
+    res.status(200);
+    res.json({
+      code: 6,
+      msg: "",
+      data: institutions,
+    });
+
+  } catch (error) {
+
+    res.status(400);
+    res.json({
+      code: -6,
+      msg: error,
+      data: "",
+    });
+  }
+});
+
 module.exports = router;
