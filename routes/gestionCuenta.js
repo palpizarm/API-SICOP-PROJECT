@@ -102,9 +102,10 @@ Request URL: http://localhost:3000/gestionCuenta/getUsers
 router.get("/getUsers", async (req, res) => {
   try {
     let users = await client.query(
-      `SELECT U.user_id,U.name,U.email,R.name as role FROM public."User" U inner join public."Role" R 
+      `SELECT U.user_id,U.name,U.email,R.name as role FROM public."User" U 
+      inner join public."Role" R 
       ON U.role_id = R.role_id 
-      AND R.role_id = 2 OR R.role_id=3 group by U.user_id,U.name,U.email,R.name;`
+      WHERE R.role_id = 2 OR R.role_id=3;`
     );
 
     //Successful get
