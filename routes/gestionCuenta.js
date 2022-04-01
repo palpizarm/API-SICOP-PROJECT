@@ -41,9 +41,9 @@ Request URL: http://localhost:3000/gestionCuenta/getMaintenanceUsers
 router.get("/getMaintenanceUsers", async (req, res) => {
   try {
     let maintenanceUsers = await client.query(
-      `SELECT U.user_id,U.name,U.email,R.name as role FROM public."User" U,public."Role" R 
+      `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U,public."Role" R 
       WHERE U.role_id = R.role_id 
-      AND R.name = 'Mantenimiento';`
+      AND R.role_id = 2;`
     );
 
     //Successful get
@@ -72,9 +72,9 @@ Request URL: http://localhost:3000/gestionCuenta/getClientUsers
 router.get("/getClientUsers", async (req, res) => {
   try {
     let clientUsers = await client.query(
-      `SELECT U.user_id,U.name,U.email,R.name as role FROM public."User" U,public."Role" R 
+      `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U,public."Role" R 
         WHERE U.role_id = R.role_id 
-        AND R.name = 'Cliente';`
+        AND R.role_id = 3;`
     );
 
     //Successful get
@@ -102,9 +102,10 @@ Request URL: http://localhost:3000/gestionCuenta/getUsers
 router.get("/getUsers", async (req, res) => {
   try {
     let users = await client.query(
-      `SELECT U.user_id,U.name,U.email,R.name as role FROM public."User" U,public."Role" R 
-        WHERE U.role_id = R.role_id 
-        AND R.name = 'Cliente' OR R.name='Mantenimiento';`
+      `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U 
+      inner join public."Role" R 
+      ON U.role_id = R.role_id 
+      WHERE R.role_id = 2 OR R.role_id=3;`
     );
 
     //Successful get
