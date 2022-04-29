@@ -43,7 +43,8 @@ router.get("/getMaintenanceUsers", async (req, res) => {
     let maintenanceUsers = await client.query(
       `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U,public."Role" R 
       WHERE U.role_id = R.role_id 
-      AND R.role_id = 2;`
+      AND R.role_id = 2
+	    AND U.deleted = B'0';`
     );
 
     //Successful get
@@ -74,7 +75,8 @@ router.get("/getClientUsers", async (req, res) => {
     let clientUsers = await client.query(
       `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U,public."Role" R 
         WHERE U.role_id = R.role_id 
-        AND R.role_id = 3;`
+        AND R.role_id = 3
+        AND U.deleted = B'0';`
     );
 
     //Successful get
@@ -94,6 +96,7 @@ router.get("/getClientUsers", async (req, res) => {
     });
   }
 });
+
 /*
 Method: GET.
 Description: Get all users that exists in LicitaTEC.
@@ -105,7 +108,7 @@ router.get("/getUsers", async (req, res) => {
       `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U 
       inner join public."Role" R 
       ON U.role_id = R.role_id 
-      WHERE R.role_id = 2 OR R.role_id=3;`
+      WHERE (R.role_id = 2 OR R.role_id=3) AND U.deleted = B'0';`
     );
 
     //Successful get
@@ -139,7 +142,8 @@ router.post("/login", async (req, res) => {
       `SELECT *
       FROM public."User"
       WHERE email = '${req.body.email}' 
-      AND password = crypt('${req.body.password}', password);`
+      AND password = crypt('${req.body.password}', password)
+      AND deleted = B'0';`
     );
 
     if (confirmation.rowCount == 0) {
