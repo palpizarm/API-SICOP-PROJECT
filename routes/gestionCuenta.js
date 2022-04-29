@@ -204,4 +204,70 @@ router.delete("/deleteUser/:user_id", async (req, res) => {
   }
 });
 
+/*
+Method: PATCH.
+Description: Update the name and email of a user.
+Request URL: http://localhost:3000/gestionCuenta/updateCount/:user_id/:name/:email
+Request params: user_id,
+                name,
+                email
+*/
+router.patch("/updateCount/:user_id/:name/:email", async (req, res) => {
+  try {
+    let updateCount = await client.query(`UPDATE public."User"
+                                        SET name = '${req.params.name}', 
+                                        email = '${req.params.email}'
+                                        WHERE user_id = ${req.params.user_id};`);
+
+    //Successful update
+    res.status(200);
+    res.json({
+      msg: "",
+      data: updateCount,
+      code: 1,
+    });
+  } catch (error) {
+    ////Update failed
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1,
+    });
+  }
+});
+
+/*
+Method: POST.
+Description: Update the password of a count.
+Request URL: http://localhost:3000/gestionCuenta/updatePassword
+Request body: {"user_id",
+              "old_password",
+              "new_password"}
+*/
+router.post("/updatePassword", async (req, res) => {
+  try {
+    let updatePassword = await client.query(`UPDATE public."User" 
+                                          SET password = crypt('${req.body.new_password}',gen_salt('bf'))
+                                          WHERE user_id = ${req.body.user_id} AND
+                                          password = crypt('${req.body.old_password}',password);`);
+
+    //Successful update
+    res.status(200);
+    res.json({
+      msg: "",
+      data: updatePassword,
+      code: 1,
+    });
+  } catch (error) {
+    ////Update failed
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1,
+    });
+  }
+});
+
 module.exports = router;
