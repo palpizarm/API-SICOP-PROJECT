@@ -170,4 +170,34 @@ router.post("/login", async (req, res) => {
   }
 });
 
+/*
+Method: DELETE.
+Description: Delete a cliente or maintenance user.
+Request URL: http://localhost:3000/gestionCuenta/deleteUser/:user_id
+Request params: user_id
+*/
+router.delete("/deleteUser/:user_id", async (req, res) => {
+  try {
+    let deleteUser = await client.query(`UPDATE public."User"
+                                        SET deleted = B'1' 
+                                        WHERE user_id = ${req.params.user_id};`);
+
+    //Successful deleted
+    res.status(200);
+    res.json({
+      msg: "",
+      data: deleteUser,
+      code: 1,
+    });
+  } catch (error) {
+    ////Deleted failed
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1,
+    });
+  }
+});
+
 module.exports = router;
