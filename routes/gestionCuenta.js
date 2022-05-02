@@ -286,15 +286,14 @@ router.patch("/updatePassword", async (req, res) => {
     let confirmation = await client.query(
       `SELECT * FROM public."User"
       WHERE user_id = '${req.body.user_id}' 
-      AND password = crypt('${req.body.password}', password)
+      AND password = crypt('${req.body.old_password}', public."User".password)
       AND deleted = B'0';`
     );
-
     if (confirmation.rowCount == 0) {
       // old password incorrect
-      res.status(400);
+      res.status(200);
       res.json({
-        msg: "La contraseña incorrecta",
+        msg: "Contraseña incorrecta",
         data: "",
         code: -4,
       });
@@ -302,8 +301,7 @@ router.patch("/updatePassword", async (req, res) => {
       // otherwise update the password normally
       let updatePassword = await client.query(`UPDATE public."User" 
                                           SET password = crypt('${req.body.new_password}',gen_salt('bf'))
-                                          WHERE user_id = ${req.body.user_id} AND
-                                          password = crypt('${req.body.old_password}',password);`);
+                                          WHERE user_id = ${req.body.user_id}`);
       //Successful update
       res.status(200);
       res.json({
