@@ -5,7 +5,9 @@ const cors = require("cors");
 const client = require("./client");
 
 //Middlewere
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200' 
+}));
 
 app.use(
   express.urlencoded({
