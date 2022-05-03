@@ -61,14 +61,21 @@ Method: GET.
 Description: Get all categories of the respective user.
 Request URL: http://localhost:3000/category/getCategories/:user_id
 Request params: user_id
-*/
+*/ // /getCategories/-1
 router.get("/getCategories/:user_id", async (req, res) => {
   try {
+    var categories;
+    if (req.params.user_id === -1) {
+      categories = await client.query(`SELECT c.category_id, c.name, c.date_created 
+                                        FROM public."Category" c
+                                        INNER JOIN public."User" u ON c.user_id = u.user_id 
+                                        WHERE u.role_id = 1  and c.deleted = B'0'`);
+    } else {
     //Get all the categories of the respective user
     let categories = await client.query(`SELECT category_id, name, date_created 
                                         FROM public."Category"
                                         WHERE user_id = ${req.params.user_id} and deleted = B'0'`);
-
+    }
     //Successful get
     res.status(200);
     res.json({
