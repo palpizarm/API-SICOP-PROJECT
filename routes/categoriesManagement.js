@@ -124,7 +124,7 @@ router.get("/getCategories/:user_id", async (req, res) => {
   try {
     var categories;
     // if the user_id is equal to -1, the getCategories should return a admin categories from db.
-    if (req.params.user_id === -1) {
+    if (req.params.user_id == -1) {
       categories = await client.query(`SELECT c.category_id, c.name, c.date_created 
                                         FROM public."Category" c
                                         INNER JOIN public."User" u ON c.user_id = u.user_id 
