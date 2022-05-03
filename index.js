@@ -16,21 +16,20 @@ app.use(
 );
 app.use(express.json());
 
-
 //import routes
-const testRoute = require('./routes/test');
-const registroUsuarioRoute = require('./routes/registroUsuario');
-const gestionCuentaRoute = require('./routes/gestionCuenta');
+const testRoute = require("./routes/test");
+const registroUsuarioRoute = require("./routes/registroUsuario");
+const gestionCuentaRoute = require("./routes/gestionCuenta");
 const categoryRoute = require("./routes/categoriesManagement");
 const favoriteInstitutionRoute = require("./routes/favoriteInstitutionsManagement");
+const tenderSavedRoute = require("./routes/tenderManagement");
 
 app.use("/category", categoryRoute);
 app.use("/institutions", favoriteInstitutionRoute);
-app.use('/test', testRoute);
-app.use('/registroUsuario', registroUsuarioRoute);
-app.use('/gestionCuenta', gestionCuentaRoute);
-
-
+app.use("/test", testRoute);
+app.use("/registroUsuario", registroUsuarioRoute);
+app.use("/gestionCuenta", gestionCuentaRoute);
+app.use("/tenders", tenderSavedRoute);
 
 client.connect((err) => {
   if (err) {
