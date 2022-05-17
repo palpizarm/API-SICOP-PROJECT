@@ -125,4 +125,114 @@ router.delete("/deleteFavorite/:user_id/:tender_id", async (req, res) => {
   }
 });
 
+/*
+Method: POST.
+Description: Insert tender in the history tender.
+Request URL: http://localhost:3000/tenders/insertHistory
+Request body: {"tender_id",
+                "user_id" }
+*/
+router.post("/insertHistory", async (req, res) => {
+  try {
+    //Declaration of variables
+    
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+
+    // Insert tender to the TenderHistory table.
+    const history = await client.query(
+      `INSERT INTO public."TenderHistory"(tender_id, user_id, date)
+      VALUES (${req.body.tender_id}, ${req.body.user_id}, '${today}');`
+    );
+
+    //Successful post
+    res.status(200);
+    res.json({
+      code: 1,
+      msg: "",
+      data: history,
+    });
+
+  } catch (error) {
+    res.status(400);
+    res.json({
+      code: -1,
+      msg: error,
+      data: "",
+    });
+  }
+});
+
+/*
+Method: GET.
+Description: Get the tender history of a respective user.
+Request URL: http://localhost:3000/tenders/getHistory/:user_id
+Request params: user_id
+*/
+router.get("/getHistory/:user_id", async (req, res) => {
+  try {
+    //Get all favorite tenders that exists in LicitaTEC.
+    const historyUser = await client.query(
+      `SELECT *  
+      FROM public."Tender" t INNER JOIN public."TenderHistory" h
+      on t.tender_id = h.tender_id
+      WHERE h.user_id = ${req.params.user_id} and h.deleted = B'0'
+      ORDER BY date ASC;`
+    );
+
+    //Successful get
+    res.status(200);
+    res.json({
+      code: 1,
+      msg: "",
+      data: historyUser,
+    });
+  } catch (error) {
+    res.status(400);
+    res.json({
+      code: -1,
+      msg: error,
+      data: "",
+    });
+  }
+});
+
+/*
+Method: UPDATE.
+Description: Delete tender history.
+Request URL: http://localhost:3000/tenders/deleteHistory/
+Request body: {"tender_ids":[]}
+*/
+router.patch("/deleteHistory", async (req, res) => {
+  try {
+    
+    for (let i = 0; i < req.body.tender_ids.length; i++) {
+      let deleteTender =
+        await client.query(`UPDATE public."TenderHistory"
+                            SET deleted = B'1' 
+                            WHERE tender_history_id = ${req.body.tender_ids[i]};`);
+    }
+
+    //Successful delete
+    res.status(200);
+    res.json({
+      msg: "",
+      data: "",
+      code: 1,
+    });
+
+  } catch (error) {
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1,
+    });
+  }
+})
+
 module.exports = router;
