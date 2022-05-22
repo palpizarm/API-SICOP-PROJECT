@@ -57,18 +57,84 @@ router.post("/createCategory", async (req, res) => {
 });
 
 /*
+Method: POST.
+Description: Insert new category of words from admin user.
+Request URL: http://localhost:3000/category/createCategoryAdmin
+Request body: {"name",
+               "words":[]}
+*/
+router.post("/createCategoryAdmin", async (req, res) => {
+  try {
+    //Declaration of variables
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, "0");
+    var mm = String(today.getMonth() + 1).padStart(2, "0");
+    var yyyy = today.getFullYear();
+
+    today = yyyy + "-" + mm + "-" + dd;
+
+    //Get the user_id of the Admin.
+    let getUserId =
+      await client.query(`SELECT user_id FROM public."User"
+                           WHERE role_id = 1`);
+    
+    //Register the new category with the query
+    let registerCategory =
+      await client.query(`INSERT INTO public."Category"(name, user_id, date_created)
+                                        VALUES ('${req.body.name}',${getUserId.rows[0].user_id},'${today}');`);
+
+    //Get the last registered category
+    let lastCategory =
+      await client.query(`SELECT category_id FROM public."Category" 
+                                          ORDER BY category_id DESC LIMIT 1`);
+
+    const idCategory = lastCategory.rows[0].category_id;
+
+    //Register each word to the new category with the query
+    for (let i = 0; i < req.body.words.length; i++) {
+      let registerWord =
+        await client.query(`INSERT INTO public."Word"(word, category_id, date_created)
+                                          VALUES ('${req.body.words[i]}',${idCategory},'${today}');`);
+    }
+
+    //Successful registration
+    res.status(200);
+    res.json({
+      msg: "",
+      data: lastCategory,
+      code: 1,
+    });
+  } catch (error) {
+    res.status(400);
+    res.json({
+      msg: error,
+      data: "",
+      code: -1,
+    });
+  }
+});
+
+/*
 Method: GET.
 Description: Get all categories of the respective user.
 Request URL: http://localhost:3000/category/getCategories/:user_id
 Request params: user_id
-*/
+*/ // /getCategories/-1
 router.get("/getCategories/:user_id", async (req, res) => {
   try {
+    var categories;
+    // if the user_id is equal to -1, the getCategories should return a admin categories from db.
+    if (req.params.user_id == -1) {
+      categories = await client.query(`SELECT c.category_id, c.name, c.date_created 
+                                        FROM public."Category" c
+                                        INNER JOIN public."User" u ON c.user_id = u.user_id 
+                                        WHERE u.role_id = 1  and c.deleted = B'0'`);
+    } else {
     //Get all the categories of the respective user
-    let categories = await client.query(`SELECT category_id, name, date_created 
+      categories = await client.query(`SELECT category_id, name, date_created 
                                         FROM public."Category"
                                         WHERE user_id = ${req.params.user_id} and deleted = B'0'`);
-
+    }
     //Successful get
     res.status(200);
     res.json({

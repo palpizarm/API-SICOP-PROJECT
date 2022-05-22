@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const client = require('../client');
+const transporter = require('../transporter');
 
 
 /*
@@ -227,7 +228,45 @@ router.post('/registerMaintenance', async (req, res) => {
                                                 password, actived, deleted, date_created)
                                                 VALUES ('${req.body.name}','${req.body.email}',
                                                 ${2},crypt('${req.body.password}', gen_salt('bf')), B'1', B'0', '${today}')`);
+                // send a email
+                let mailOptions = {
+                    from: 'licitatecmail@gmail.com',
+                    to: 'pabloalpizar99@gmail.com',
+                    subject: 'Registro exitoso Licitatec',
+                    text: `Estimado  ${req.body.name},  le informamos que la creación de la cuenta en LICITATEC se realizo de manera exitosa. \nPuede visitar su perfil por medio del siguiente enlace: www.licitatec.cr/login.
+
+                    Correo: ${req.body.email}
+                    Contraseña: ${req.body.password}
+                    Nota: Asegurese de cambiar su contraseña al ingresar por primera vez.
+                    `
+                }
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log(error);
+                      } else {
+                        console.log('Email sent: ' + info.response);
+                      }
+                })
+
+                // insert a notification for the user
+                await client.query(`INSERT INTO public."Notification"(user_id, date_created, message, deleted, sent)
+                                    SELECT user_id, '${today}', 
+                                        'Bienvenido a LicitaTec. Su cuenta ha sido creada con éxito.',
+                                        b'0',
+                                        b'1'
+                                    FROM public."User" 
+                                    WHERE email = '${req.body.email}'`);
                 
+                // insert a notification for the admin (account created)
+                await client.query(`INSERT INTO public."Notification"(user_id, date_created, message, deleted, sent)
+                                    SELECT user_id, '${today}', 
+                                        'La cuenta para ${req.body.name} ha sido creada con exito.',
+                                        b'0',
+                                        b'1'
+                                    FROM public."User" 
+                                    WHERE  role_id = 1`);
+
                 //Successful registration
                 res.status(200);
                 res.json({
