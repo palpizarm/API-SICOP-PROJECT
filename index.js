@@ -16,6 +16,20 @@ app.use(
 );
 app.use(express.json());
 
+
+// app.use(function (req, res, next) {
+//   client.connect((err) => {
+//     if (err) {
+//       console.error("connection error", err.stack);
+//     } else {
+//       console.log(
+//         "connected to postgresql database. Listen in port localhost:3000"
+//       );
+//     }
+//   });
+//   next()
+// })
+
 //import routes
 const testRoute = require("./routes/test");
 const registroUsuarioRoute = require("./routes/registroUsuario");
