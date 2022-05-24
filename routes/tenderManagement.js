@@ -43,7 +43,7 @@ router.get("/getFavorites/:user_id", async (req, res) => {
   try {
     //Get all favorite tenders of the respective user.
     const favoriteTenders = await client.query(
-      `SELECT T.tender_id,name,description FROM public."Tender" T INNER JOIN public."TenderSaved" F ON T.tender_id = F.tender_id WHERE user_id = ${req.params.user_id};`
+      `SELECT T.tender_id,description FROM public."Tender" T INNER JOIN public."TenderSaved" F ON T.tender_id = F.tender_id WHERE user_id = ${req.params.user_id};`
     );
 
     //Successful get
