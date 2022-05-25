@@ -13,7 +13,7 @@ router.get("/getFavorites/:user_id", async (req, res) => {
   try {
     //Get all favorite institutions of the respective user.
     const favoriteInstitutions = await client.query(
-      `SELECT F.institution_id,legal_id,abbreviation,name FROM public."Institution" I,public."FavoriteInstitution" F where F.user_id = ${req.params.user_id};`
+      `SELECT F.institution_id,name FROM public."Institution" I,public."FavoriteInstitution" F where F.user_id = ${req.params.user_id};`
     );
 
     //Successful get
@@ -110,8 +110,8 @@ router.post("/edit", async (req, res) => {
     //Edit a specific institution.
     const favorite = await client.query(
       `UPDATE public."Institution" 
-          SET legal_id = '${req.body.legal_id}',name ='${req.body.name}',abbreviation = '${req.body.abbreviation}'
-              WHERE institution_id = '${req.body.institution_id}' ;`
+        SET name ='${req.body.name}'
+        WHERE institution_id = '${req.body.institution_id}' ;`
     );
 
     //Successful post
