@@ -1,3 +1,5 @@
+from encodings import utf_8
+import encodings
 import time
 import pandas as pd
 
@@ -124,7 +126,7 @@ def obtainRegions(c,tableNum = 13):
             checked = r.find_element_by_tag_name('input').is_selected()
             option = r.find_element_by_class_name('eptdl').text
             if checked:
-                regiones.append(option)
+                regiones.append(option.strip())
         except:
             return obtainRegions(c,14)
     data['Regiones'][c] = regiones
@@ -203,36 +205,41 @@ def scrapConcursosFecha(fechaInicio, fechaFinal, csv):
 
     try:
         # REVISAR ESTO PROBLEMA CON EL CAMBIO DE PAGINA
-        while i <= pageAmount:
-            nombresInst=None
-            idInst=None
-            descripciones=None
-            solicitudes=None
-            fechas=None
+        while i <= pageAmount+1:
+            # nombresInst=None
+            # idInst=None
+            # descripciones=None
+            # solicitudes=None
+            # fechas=None
             obtainDataConcursos()
             paging = driver.find_element_by_id('paging')
-            if j <= 4:
-                button = paging.find_element_by_link_text(str(i))
-                button.click()
-                j += 1
+            if j < 10:
+                try:
+                    button = paging.find_element_by_link_text(str(i))
+                    button.click()
+                    j += 1
+                except:
+                    break
             else:
                 j = 1
                 nextButton = paging.find_element_by_class_name('page02')
                 nextButton.click()
             i += 1
     except:
-        print("Error aqui")
+        pass
 
     scrapConcursos(listaProcedimientos,"probando")
     #df = pd.DataFrame(
     #    {'NumProc': numerosProc, 'Institucion': nombresInst, 'ID Institucion':idInst ,'Descripcion': descripciones, 'Solicitud': solicitudes,
     #     'Fecha': fechas})
     #print(df)
+
     df = pd.DataFrame(data)
-    df.to_csv(csv, index=False, header=True, encoding = 'utf-8' )
+    df = df[["Número de procedimiento", "Nombre de la institución", "Fecha/hora de publicación", "Descripción del procedimiento", "Tipo de procedimiento", "Inicio de recepción de ofertas", "Fecha/hora de apertura de ofertas", "Presupuesto total estimado", "Estado del concurso", "Cierre de recepción de ofertas", "Regiones"]]
+    df.to_csv(csv, index=False, header=True, encoding= 'utf-8' )
+    df.to_json( 'file1.json', orient= "records", force_ascii=False, date_format="iso")
     print("Saved")
     return df
-
 
 def main(fromDate, toDate):
     global driver
@@ -274,3 +281,7 @@ def main(fromDate, toDate):
     #print("E13.csv")
     #scrapConcursos("E14.csv", "C14")
     #print("E14.csv")
+
+
+if __name__ == '__main__':
+    main('24052022','24052022')
