@@ -108,10 +108,10 @@ def getAllTenders():
 
     cur.close()
     conn.close()
-    # dt = pd.DataFrame(result)
-    # dt.columns = columnsName
-    # result = dt.to_json(orient= "records", force_ascii=False, date_format="iso")
-    return { "code": 1, "msg": '', "data": tenderList }
+    dt = pd.DataFrame(result)
+    dt.columns = columnsName
+    result = dt.to_json(orient= "records", force_ascii=False, date_format="iso")
+    return { "code": 1, "msg": '', "data": result }
 
 def get_db_connection():
     conn = psycopg2.connect(
