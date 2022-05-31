@@ -49,21 +49,21 @@ def getData(keywords_list):
 @app.route('/updateTender', methods=["GET"])
 def update():   
 
-    tenderList = pd.read_json('file1.json')
-    # toDate = formatDate(str(date.today()))
+    #tenderList = pd.read_json('file1.json')
+    toDate = formatDate(str(date.today()))
     
-    # conn = get_db_connection()
-    # cur = conn.cursor()
+    conn = get_db_connection()
+    cur = conn.cursor()
 
-    # cur.execute('SELECT publication_date FROM "Tender" ORDER BY "Tender".publication_date DESC LIMIT 1;')
-    # result = cur.fetchone()
-    # cur.close()
-    # conn.close()
-    # if (result == None):
-    #     fromDate = toDate
-    # else:
-    #     fromDate = formatDate(str(result[0]))
-    # tenderList = scrapConcursosRevisado.main(fromDate, toDate)
+    cur.execute('SELECT publication_date FROM "Tender" ORDER BY "Tender".publication_date DESC LIMIT 1;')
+    result = cur.fetchone()
+    cur.close()
+    conn.close()
+    if (result == None):
+        fromDate = toDate
+    else:
+        fromDate = formatDate(str(result[0]))
+    tenderList = scrapConcursosRevisado.main(fromDate, toDate)
 
     conn = get_db_connection()
     cur = conn.cursor()
