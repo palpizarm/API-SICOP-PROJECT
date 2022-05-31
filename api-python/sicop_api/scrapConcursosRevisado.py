@@ -237,7 +237,7 @@ def scrapConcursosFecha(fechaInicio, fechaFinal, csv):
     df = pd.DataFrame(data)
     df = df[["Número de procedimiento", "Nombre de la institución", "Fecha/hora de publicación", "Descripción del procedimiento", "Tipo de procedimiento", "Inicio de recepción de ofertas", "Fecha/hora de apertura de ofertas", "Presupuesto total estimado", "Estado del concurso", "Cierre de recepción de ofertas", "Regiones"]]
     df.to_csv(csv, index=False, header=True, encoding= 'utf-8' )
-    df.to_json( 'file1.json', orient= "records", force_ascii=False, date_format="iso")
+    df.to_json( 'licitaciones.json', orient= "records", force_ascii=False, date_format="iso")
     print("Saved")
     return df
 
