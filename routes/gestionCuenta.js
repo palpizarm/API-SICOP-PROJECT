@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const client = require("../client");
-const { patch } = require("./test");
+const pool = require("../pool");
 
 /*
 Method: PATCH.
@@ -10,6 +9,7 @@ Request URL: http://localhost:3000/gestionCuenta/inactivateUser
 Request body: {"user_id"}
 */
 router.patch("/inactivateUser", async (req, res) => {
+  const client = await pool.connect()
   try {
     let updateUser = await client.query(`UPDATE public."User"
                                             SET actived = B'0' 
@@ -30,6 +30,8 @@ router.patch("/inactivateUser", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -39,6 +41,7 @@ Description: Get all mantenance users that exists in LicitaTEC.
 Request URL: http://localhost:3000/gestionCuenta/getMaintenanceUsers
 */
 router.get("/getMaintenanceUsers", async (req, res) => {
+  const client = await pool.connect()
   try {
     let maintenanceUsers = await client.query(
       `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U,public."Role" R 
@@ -62,6 +65,8 @@ router.get("/getMaintenanceUsers", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -71,6 +76,7 @@ Description: Get all client users that exists in LicitaTEC.
 Request URL: http://localhost:3000/gestionCuenta/getClientUsers
 */
 router.get("/getClientUsers", async (req, res) => {
+  const client = await pool.connect()
   try {
     let clientUsers = await client.query(
       `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U,public."Role" R 
@@ -94,6 +100,8 @@ router.get("/getClientUsers", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -103,6 +111,7 @@ Description: Get all users that exists in LicitaTEC.
 Request URL: http://localhost:3000/gestionCuenta/getUsers
 */
 router.get("/getUsers", async (req, res) => {
+  const client = await pool.connect()
   try {
     let users = await client.query(
       `SELECT U.user_id,U.name,U.email,R.name as role, U.actived FROM public."User" U 
@@ -126,6 +135,8 @@ router.get("/getUsers", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -137,6 +148,7 @@ Request body: {"email",
               "password"}
 */
 router.post("/login", async (req, res) => {
+  const client = await pool.connect()
   try {
     let confirmation = await client.query(
       `SELECT *
@@ -171,6 +183,8 @@ router.post("/login", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -181,6 +195,7 @@ Request URL: http://localhost:3000/gestionCuenta/deleteUser/:user_id
 Request params: user_id
 */
 router.delete("/deleteUser/:user_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     let deleteUser = await client.query(`UPDATE public."User"
                                         SET deleted = B'1' 
@@ -201,6 +216,8 @@ router.delete("/deleteUser/:user_id", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -214,6 +231,7 @@ Request body: {"user_id",
               "email"}
 */
 router.get("/getAccount/:user_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     let user = await client.query(`SELECT * FROM public."User"
                                   WHERE user_id = ${req.params.user_id}`)
@@ -234,6 +252,8 @@ router.get("/getAccount/:user_id", async (req, res) => {
       data: "El usuario no existe",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 
 })
@@ -247,6 +267,7 @@ Request body: {"user_id",
               "email"}
 */
 router.patch("/updateAccount", async (req, res) => {
+  const client = await pool.connect()
   try {
     let updateAccount = await client.query(`UPDATE public."User"
                                         SET name = '${req.body.name}', 
@@ -268,6 +289,8 @@ router.patch("/updateAccount", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -280,6 +303,7 @@ Request body: {"user_id",
               "new_password"}
 */
 router.patch("/updatePassword", async (req, res) => {
+  const client = await pool.connect()
   try {
 
     // check old password
@@ -321,6 +345,8 @@ router.patch("/updatePassword", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 

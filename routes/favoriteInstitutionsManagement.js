@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const client = require("../client");
+const pool = require("../pool");
 
 /*
 Method: GET.
@@ -10,6 +10,7 @@ Request params: user_id
 */
 
 router.get("/getFavorites/:user_id", async (req, res) => {
+    const client = await pool.connect()
     try {
         //Get all favorite institutions of the respective user.
         const favoriteInstitutions = await client.query(
@@ -31,6 +32,8 @@ router.get("/getFavorites/:user_id", async (req, res) => {
             msg: error,
             data: "",
         });
+    } finally {
+        client.release()
     }
 });
 
@@ -43,6 +46,7 @@ Request body: {"user_id",
 */
 
 router.post("/createFavorite", async (req, res) => {
+    const client = await pool.connect()
     try {
         // Insert new favorite institution to the respective user
         const favorite = await client.query(
@@ -63,6 +67,8 @@ router.post("/createFavorite", async (req, res) => {
             msg: error,
             data: "",
         });
+    } finally {
+        client.release()
     }
 });
 
@@ -73,6 +79,7 @@ Request URL: http://localhost:3000/institutions/deleteFavorite/:user_id/:institu
 Request params: user_id,institution_id
 */
 router.delete("/deleteFavorite/:user_id/:institution_id", async (req, res) => {
+    const client = await pool.connect()
     try {
         //Delete a specific favorite institution of the respective user.
         const favorite = await client.query(
@@ -93,6 +100,8 @@ router.delete("/deleteFavorite/:user_id/:institution_id", async (req, res) => {
             msg: error,
             data: "",
         });
+    } finally {
+        client.release()
     }
 });
 
@@ -107,6 +116,7 @@ Request body: {"institution_id",
                 }
 */
 router.post("/edit", async (req, res) => {
+    const client = await pool.connect()
     try {
         //Edit a specific institution.
         const favorite = await client.query(
@@ -129,6 +139,8 @@ router.post("/edit", async (req, res) => {
             msg: error,
             data: "",
         });
+    } finally {
+        client.release()
     }
 });
 
@@ -140,6 +152,7 @@ Request params: user_id
 */
 
 router.get("/", async (req, res) => {
+    const client = await pool.connect()
     try {
         //Get all  institutions in the system.
         const institutions = await client.query(
@@ -160,6 +173,8 @@ router.get("/", async (req, res) => {
             msg: error,
             data: "",
         });
+    } finally {
+        client.release()
     }
 });
 

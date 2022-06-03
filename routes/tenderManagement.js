@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const client = require("../client");
+const pool = require("../pool");
 
 /*
 Method: GET.
@@ -9,6 +9,7 @@ Request URL: http://localhost:3000/tenders/getAll
 */
 
 router.get("/getAll", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Get all favorite tenders that exists in LicitaTEC.
     const allTenders = await client.query(
@@ -29,6 +30,8 @@ router.get("/getAll", async (req, res) => {
       msg: error,
       data: "",
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -40,6 +43,7 @@ Request params: user_id
 */
 
 router.get("/getFavorites/:user_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Get all favorite tenders of the respective user.
     const favoriteTenders = await client.query(
@@ -60,6 +64,8 @@ router.get("/getFavorites/:user_id", async (req, res) => {
       msg: error,
       data: "",
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -72,6 +78,7 @@ Request body: {"user_id",
 */
 
 router.post("/createFavorite", async (req, res) => {
+  const client = await pool.connect()
   try {
     // Insert new favorite tender to the respective user.
     const favorite = await client.query(
@@ -92,6 +99,8 @@ router.post("/createFavorite", async (req, res) => {
       msg: error,
       data: "",
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -102,6 +111,7 @@ Request URL: http://localhost:3000/tenders/deleteFavorite/:user_id/:tender_id
 Request params: user_id,tender_id
 */
 router.delete("/deleteFavorite/:user_id/:tender_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Delete a specific favorite tender of the respective user.
     const favorite = await client.query(
@@ -122,6 +132,8 @@ router.delete("/deleteFavorite/:user_id/:tender_id", async (req, res) => {
       msg: error,
       data: "",
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -133,9 +145,10 @@ Request body: {"tender_id",
                 "user_id" }
 */
 router.post("/insertHistory", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Declaration of variables
-    
+
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -164,6 +177,8 @@ router.post("/insertHistory", async (req, res) => {
       msg: error,
       data: "",
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -174,6 +189,7 @@ Request URL: http://localhost:3000/tenders/getHistory/:user_id
 Request params: user_id
 */
 router.get("/getHistory/:user_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Get all favorite tenders that exists in LicitaTEC.
     const historyUser = await client.query(
@@ -198,6 +214,8 @@ router.get("/getHistory/:user_id", async (req, res) => {
       msg: error,
       data: "",
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -208,8 +226,9 @@ Request URL: http://localhost:3000/tenders/deleteHistory/
 Request body: {"tender_ids":[]}
 */
 router.patch("/deleteHistory", async (req, res) => {
+  const client = await pool.connect()
   try {
-    
+
     for (let i = 0; i < req.body.tender_ids.length; i++) {
       let deleteTender =
         await client.query(`UPDATE public."TenderHistory"
@@ -232,6 +251,8 @@ router.patch("/deleteHistory", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 })
 

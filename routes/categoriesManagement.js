@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const client = require("../client");
+const pool = require("../pool");
 
 /*
 Method: POST.
@@ -11,6 +11,7 @@ Request body: {"name",
                "words":[]}
 */
 router.post("/createCategory", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Declaration of variables
     var today = new Date();
@@ -53,6 +54,8 @@ router.post("/createCategory", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -64,6 +67,7 @@ Request body: {"name",
                "words":[]}
 */
 router.post("/createCategoryAdmin", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Declaration of variables
     var today = new Date();
@@ -77,7 +81,7 @@ router.post("/createCategoryAdmin", async (req, res) => {
     let getUserId =
       await client.query(`SELECT user_id FROM public."User"
                            WHERE role_id = 1`);
-    
+
     //Register the new category with the query
     let registerCategory =
       await client.query(`INSERT INTO public."Category"(name, user_id, date_created)
@@ -111,6 +115,8 @@ router.post("/createCategoryAdmin", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -121,6 +127,7 @@ Request URL: http://localhost:3000/category/getCategories/:user_id
 Request params: user_id
 */ // /getCategories/-1
 router.get("/getCategories/:user_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     var categories;
     // if the user_id is equal to -1, the getCategories should return a admin categories from db.
@@ -130,7 +137,7 @@ router.get("/getCategories/:user_id", async (req, res) => {
                                         INNER JOIN public."User" u ON c.user_id = u.user_id 
                                         WHERE u.role_id = 1  and c.deleted = B'0'`);
     } else {
-    //Get all the categories of the respective user
+      //Get all the categories of the respective user
       categories = await client.query(`SELECT category_id, name, date_created 
                                         FROM public."Category"
                                         WHERE user_id = ${req.params.user_id} and deleted = B'0'`);
@@ -149,6 +156,8 @@ router.get("/getCategories/:user_id", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -159,6 +168,7 @@ Request URL: http://localhost:3000/category/getWords/:category_id
 Request params: category_id
 */
 router.get("/getWords/:category_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Get all the words of the respective category
     let words = await client.query(`SELECT word_id, word, date_created 
@@ -179,6 +189,8 @@ router.get("/getWords/:category_id", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -193,6 +205,7 @@ Request body: {"category_id",
                "deleteWords":[]}
 */
 router.patch("/updateCategory", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Declaration of variables
     var today = new Date();
@@ -235,6 +248,8 @@ router.patch("/updateCategory", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -246,6 +261,7 @@ Request URL: http://localhost:3000/category/getCategories/:category_id
 Request params: category_id
 */
 router.get("/getCategory/:category_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Get the category
     let category = await client.query(`SELECT category_id, name, date_created 
@@ -266,6 +282,8 @@ router.get("/getCategory/:category_id", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 });
 
@@ -277,6 +295,7 @@ Request URL: http://localhost:3000/category/:category_id
 Request params: category_id
 */
 router.delete("/:category_id", async (req, res) => {
+  const client = await pool.connect()
   try {
     //Delete the category
     let categories = await client.query(`UPDATE public."Category" 
@@ -303,6 +322,8 @@ router.delete("/:category_id", async (req, res) => {
       data: "",
       code: -1,
     });
+  } finally {
+    client.release()
   }
 })
 

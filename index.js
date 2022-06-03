@@ -2,7 +2,7 @@ const { Client } = require("pg");
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const client = require("./client");
+const pool = require("./pool");
 
 //Middlewere
 app.use(cors({
@@ -17,21 +17,7 @@ app.use(
 app.use(express.json());
 
 
-// app.use(function (req, res, next) {
-//   client.connect((err) => {
-//     if (err) {
-//       console.error("connection error", err.stack);
-//     } else {
-//       console.log(
-//         "connected to postgresql database. Listen in port localhost:3000"
-//       );
-//     }
-//   });
-//   next()
-// })
-
 //import routes
-const testRoute = require("./routes/test");
 const registroUsuarioRoute = require("./routes/registroUsuario");
 const gestionCuentaRoute = require("./routes/gestionCuenta");
 const categoryRoute = require("./routes/categoriesManagement");
@@ -41,21 +27,15 @@ const notificationsCenterRoute = require("./routes/notificationsCenter");
 
 app.use("/category", categoryRoute);
 app.use("/institutions", favoriteInstitutionRoute);
-app.use("/test", testRoute);
 app.use("/registroUsuario", registroUsuarioRoute);
 app.use("/gestionCuenta", gestionCuentaRoute);
 app.use("/tenders", tenderSavedRoute);
 app.use("/notificationsCenter", notificationsCenterRoute);
 
-client.connect((err) => {
-  if (err) {
-    console.error("connection error", err.stack);
-  } else {
-    console.log(
-      "connected to postgresql database. Listen in port localhost:3000"
-    );
-  }
-});
 
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err)
+  process.exit(-1)
+})
 // server listing in port 3000
 app.listen(3000);

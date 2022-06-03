@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../client');
+const pool = require('../pool');
 const transporter = require('../transporter');
 
 
@@ -13,6 +13,7 @@ Request body: {"name",
                "password"}
 */
 router.post('/registerClient', async (req, res) => {
+    const client = await pool.connect()
     try {
 
         //Declaration of variables
@@ -28,27 +29,27 @@ router.post('/registerClient', async (req, res) => {
         //Validate correct mail format with regular expression
         emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-        if (emailRegex.test(String(req.body.email))){
-        
+        if (emailRegex.test(String(req.body.email))) {
+
             format = true;
 
         }
 
         //Register new user
-        if(format){
-            
+        if (format) {
+
             let users = await client.query(`SELECT * FROM public."User"
                                         WHERE email = '${req.body.email}'`);
-            
+
             //Validates if the user already exists
-            if (users.rowCount == 0){
+            if (users.rowCount == 0) {
 
                 //Register the new user with the query
                 let register = await client.query(`INSERT INTO public."User"(name, email, role_id, 
                                                 password, actived, deleted, date_created)
                                                 VALUES ('${req.body.name}','${req.body.email}',
                                                 ${3},crypt('${req.body.password}', gen_salt('bf')), B'1', B'0', '${today}')`);
-                
+
                 //Successful registration
                 res.status(200);
                 res.json({
@@ -57,7 +58,7 @@ router.post('/registerClient', async (req, res) => {
                     code: 1
                 })
 
-            }else{
+            } else {
 
                 //Registration failed
                 res.status(400);
@@ -67,9 +68,9 @@ router.post('/registerClient', async (req, res) => {
                     code: -1
                 })
 
-            }                            
-            
-        }else{
+            }
+
+        } else {
 
             //Registration failed
             res.status(400);
@@ -80,8 +81,8 @@ router.post('/registerClient', async (req, res) => {
             })
 
         }
-       
-    } catch(error) {
+
+    } catch (error) {
 
         ////Registration failed
         res.status(400);
@@ -90,6 +91,8 @@ router.post('/registerClient', async (req, res) => {
             data: "",
             code: -1
         })
+    } finally {
+        client.release()
     }
 })
 
@@ -103,6 +106,7 @@ Request body: {"name",
                "password"}
 */
 router.post('/registerAdmin', async (req, res) => {
+    const client = await pool.connect()
     try {
 
         //Declaration of variables
@@ -118,27 +122,27 @@ router.post('/registerAdmin', async (req, res) => {
         //Validate correct mail format with regular expression
         emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-        if (emailRegex.test(String(req.body.email))){
-        
+        if (emailRegex.test(String(req.body.email))) {
+
             format = true;
 
         }
 
         //Register new user
-        if(format){
-            
+        if (format) {
+
             let users = await client.query(`SELECT * FROM public."User"
                                         WHERE role_id = ${1}`);
-            
+
             //Validates if the Admin already exists
-            if (users.rowCount == 0){
+            if (users.rowCount == 0) {
 
                 //Register the new Admin with the query
                 let register = await client.query(`INSERT INTO public."User"(name, email, role_id, 
                                                 password, actived, deleted, date_created)
                                                 VALUES ('${req.body.name}','${req.body.email}',
                                                 ${1},crypt('${req.body.password}', gen_salt('bf')), B'1', B'0', '${today}')`);
-                
+
                 //Successful registration
                 res.status(200);
                 res.json({
@@ -147,7 +151,7 @@ router.post('/registerAdmin', async (req, res) => {
                     code: 1
                 })
 
-            }else{
+            } else {
 
                 //Registration failed
                 res.status(400);
@@ -157,9 +161,9 @@ router.post('/registerAdmin', async (req, res) => {
                     code: -1
                 })
 
-            }                            
-            
-        }else{
+            }
+
+        } else {
 
             //Registration failed
             res.status(400);
@@ -170,8 +174,8 @@ router.post('/registerAdmin', async (req, res) => {
             })
 
         }
-       
-    } catch(error) {
+
+    } catch (error) {
 
         ////Registration failed
         res.status(400);
@@ -180,6 +184,8 @@ router.post('/registerAdmin', async (req, res) => {
             data: "",
             code: -1
         })
+    } finally {
+        client.release()
     }
 })
 
@@ -193,6 +199,7 @@ Request body: {"name",
                "password"}
 */
 router.post('/registerMaintenance', async (req, res) => {
+    const client = await pool.connect()
     try {
 
         //Declaration of variables
@@ -208,20 +215,20 @@ router.post('/registerMaintenance', async (req, res) => {
         //Validate correct mail format with regular expression
         emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-        if (emailRegex.test(String(req.body.email))){
-        
+        if (emailRegex.test(String(req.body.email))) {
+
             format = true;
 
         }
 
         //Register new user
-        if(format){
-            
+        if (format) {
+
             let users = await client.query(`SELECT * FROM public."User"
                                         WHERE email = '${req.body.email}'`);
-            
+
             //Validates if the user already exists
-            if (users.rowCount == 0){
+            if (users.rowCount == 0) {
 
                 //Register the new user with the query
                 let register = await client.query(`INSERT INTO public."User"(name, email, role_id, 
@@ -244,9 +251,9 @@ router.post('/registerMaintenance', async (req, res) => {
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
                         console.log(error);
-                      } else {
+                    } else {
                         console.log('Email sent: ' + info.response);
-                      }
+                    }
                 })
 
                 // insert a notification for the user
@@ -257,7 +264,7 @@ router.post('/registerMaintenance', async (req, res) => {
                                         b'1'
                                     FROM public."User" 
                                     WHERE email = '${req.body.email}'`);
-                
+
                 // insert a notification for the admin (account created)
                 await client.query(`INSERT INTO public."Notification"(user_id, date_created, message, deleted, sent)
                                     SELECT user_id, '${today}', 
@@ -275,7 +282,7 @@ router.post('/registerMaintenance', async (req, res) => {
                     code: 1
                 })
 
-            }else{
+            } else {
 
                 //Registration failed
                 res.status(400);
@@ -285,9 +292,9 @@ router.post('/registerMaintenance', async (req, res) => {
                     code: -1
                 })
 
-            }                            
-            
-        }else{
+            }
+
+        } else {
 
             //Registration failed
             res.status(400);
@@ -298,8 +305,8 @@ router.post('/registerMaintenance', async (req, res) => {
             })
 
         }
-       
-    } catch(error) {
+
+    } catch (error) {
 
         ////Registration failed
         res.status(400);
@@ -308,6 +315,8 @@ router.post('/registerMaintenance', async (req, res) => {
             data: "",
             code: -1
         })
+    } finally {
+        client.release()
     }
 })
 
